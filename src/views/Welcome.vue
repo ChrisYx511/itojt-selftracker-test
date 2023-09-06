@@ -101,7 +101,7 @@ async function submitLoginForm() {
 }
 function handleLogin(userName) {
     overlay.value = true
-    auth.login(userName.trim() + "@chrisyx511outlook.onmicrosoft.com").then(() => {overlay.value = false; router.push('/app')}, () => {overlay.value = false;})
+    auth.login(userName.trim() + "@cadets6victorytest.onmicrosoft.com").then(() => {overlay.value = false; router.push('/app')}, () => {overlay.value = false;})
 }
 onMounted(() => {
     auth.initialize().then((accountInfo) => {
