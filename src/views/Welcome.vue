@@ -5,7 +5,7 @@
             <v-img class="mx-4" src="@/assets/CdtCompass.png" max-height="40" max-width="40" contain>
             </v-img>
             <v-app-bar-title>
-                CadetCompass | AtlasCadets (α)
+                CadetCompass | AtlasCadets (6 - Inspections // α)
             </v-app-bar-title>
         </v-app-bar>
         <v-main>
@@ -14,9 +14,14 @@
                     <v-col cols="12" md="6">
                         <v-sheet :class="paddingClass" >
                             <div :class="titleClass">Welcome to <div class="font-weight-medium" >CadetCompass</div></div><br>
-                            <div :class="titleClass">Bienvenue à <br><div class="font-weight-medium" >AtlasCadets</div></div>
-                            <v-img class="align-center button mt-6 rounded-lg" src="@/assets/c365en.svg" max-width="300" @click="handleLogin()">
-                            </v-img>
+                            <div :class="titleClass">Bienvenue à <br><div class="font-weight-medium" >AtlasCadets</div></div><br>
+                            <v-form ref="loginForm" @submit.prevent>
+                                <v-text-field v-model="userName" :rules="userNameValidation" placeholder="Username | Nom d'utilisateur">
+                                </v-text-field>
+                                <v-btn type="submit" block class="mt-2" @click="submitLoginForm()">Login | Se Connecter</v-btn>
+                            </v-form>
+                            <!--<v-img class="align-center button mt-6 rounded-lg" src="@/assets/c365en.svg" max-width="300" @click="handleLogin()">
+                            </v-img>-->
                         </v-sheet>
                     </v-col>
                     <v-col></v-col>
@@ -38,6 +43,14 @@ import { auth } from '@/stores/auth'
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 import { onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { locale } = useI18n()
+
+if (localStorage.getItem("lang") !== null | localStorage.getItem("lang") !== '') {
+    locale.value = localStorage.getItem("lang")
+}
+
 
 const { lgAndUp } = useDisplay()
 console.log(auth.initialized)
@@ -72,10 +85,23 @@ const randomImage = computed( () => {
     return images[Math.floor(Math.random() * 6)]
 }
 )
-
-function handleLogin() {
+const loginForm = ref(null)
+const userName = ref("")
+const userNameValidation = ref([
+    value => {
+        if (value) return true
+        return "Enter a username | Entrez un nom d'utilisateur"
+    }
+])
+async function submitLoginForm() {
+    const {valid} = await loginForm.value.validate()
+    if (valid) {
+        handleLogin(userName.value)
+    }
+}
+function handleLogin(userName) {
     overlay.value = true
-    auth.login().then(() => {overlay.value = false; router.push('/app')}, () => {overlay.value = false;})
+    auth.login(userName.trim() + "@chrisyx511outlook.onmicrosoft.com").then(() => {overlay.value = false; router.push('/app')}, () => {overlay.value = false;})
 }
 onMounted(() => {
     auth.initialize().then((accountInfo) => {

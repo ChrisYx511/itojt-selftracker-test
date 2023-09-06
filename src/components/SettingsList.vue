@@ -44,6 +44,7 @@
                     locale.value = 'fr'
                     break;
             }
+            localStorage.setItem('lang', locale.value)
         }
     })
 

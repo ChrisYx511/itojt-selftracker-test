@@ -4,7 +4,7 @@
     <v-img class="mx-2" src="@/assets/CdtCompass.png" max-height="40" max-width="40" contain>
     </v-img>
     <v-app-bar-title>
-      {{ t('appName') }} (α)
+      {{ t('appName') }} (6 - INSPECTIONS // α)
     </v-app-bar-title>
   </v-app-bar>
   <v-navigation-drawer v-model="drawer">
@@ -38,20 +38,6 @@ console.log(route.fullPath)
       key: true,
     },
     {
-      title: 'activities',
-      value: 2,
-      icon: "mdi-nature-people",
-      path: 'activities',
-      key: t('activities.title'),
-    },
-    {
-      title: 'evaluations',
-      value: 3,
-      icon: "mdi-note-multiple",
-      path: 'evaluations',
-      key: t('evaluations.title'),
-    },
-    {
       title: 'account',
       value: 4,
       icon: "mdi-account",
@@ -73,14 +59,6 @@ console.log(route.fullPath)
       },
       icon: "mdi-open-in-new"
     },
-    {
-      title: "Cadets.ca",
-      value: 6,
-      action: () => {
-        window.open("https://cadets.gc.ca")
-      },
-      icon: "mdi-open-in-new"
-    }
   ])
 
  function getTranslatedMenuOption(optionTitle) {

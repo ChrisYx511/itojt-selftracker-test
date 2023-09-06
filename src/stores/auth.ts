@@ -18,9 +18,9 @@ async function initialize (client?: NavigationClient) {
     return data
   })
 }
-async function login () {
+async function login (hint = null) {
   error.value = ''
-  return Auth.login()
+  return Auth.login(hint)
     .then(data => {
       account.value = data
       error.value = ''

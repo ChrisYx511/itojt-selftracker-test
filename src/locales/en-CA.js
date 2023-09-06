@@ -3,13 +3,15 @@ import { t_activities_en } from "./Components/Activities/en"
 import { t_evaluations_en } from "./Components/Evaluations/en"
 import { t_settings_en } from "./Components/Settings/en"
 import { t_homeDashboard_en } from "./Components/HomeDashboard/en"
+import { t_inspectionsTable_en } from "./Components/InspectionsTable/en"
 
-export const en = {
+const en = {
     dashboardStrings: t_homeDashboard_en,
     languageName: 'English',
-    activities: t_activities_en,
+    //activities: t_activities_en,
     account: t_account_en,
-    evaluations: t_evaluations_en,
+    //evaluations: t_evaluations_en,
+    inspectionsTable: t_inspectionsTable_en,
     settings: t_settings_en,
     appName: 'CadetCompass',
     $vuetify: {
@@ -103,3 +105,5 @@ export const en = {
         }
     },
 }
+
+export default en

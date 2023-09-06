@@ -44,10 +44,13 @@ export const Auth = {
   /**
    * Login
    */
-  async login (): Promise<MaybeAccount> {
+  async login (loginHint = null): Promise<MaybeAccount> {
     const request: PopupRequest = {
       redirectUri: config.auth.redirectUri,
       scopes,
+    }
+    if (loginHint !== null) {
+      request.loginHint = loginHint
     }
     return msal
       .loginPopup(request)

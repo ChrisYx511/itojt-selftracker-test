@@ -32,19 +32,9 @@ const routes = [
         component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
       },
       {
-        path: 'activities',
-        name: "Activities",
-        component: () => import('@/views/Activities.vue')
-      },
-      {
         path: 'login',
         name: "Login",
         component: () => import('@/views/Login.vue'),
-      },
-      {
-      path: 'evaluations',
-      name: "Evaluations",
-      component: () => import('@/views/Evaluations.vue')
       },
       {
         path: 'settings',
@@ -78,6 +68,7 @@ const client = new NavigationClient()
 
 // set up auth and guard routes
 router.beforeEach(async (to, from, next) => {
+
   // 404
   if (to.matched[0]?.path === unmatched) {
     return next()
