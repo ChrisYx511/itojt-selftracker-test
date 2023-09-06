@@ -2,17 +2,17 @@ import type { Configuration } from '@azure/msal-browser'
 import { LogLevel } from '@azure/msal-browser'
 
 export const scopes = [
-  'openid','profile', 'api://26581cea-19ca-4e02-8e64-68676836db6c/CadetData.ReadAll'
+  'openid','profile', 'api://f20cc733-eebf-463a-ab96-563ba859f21e/Cadets.AccessAll'
 ]
 
 export const config: Configuration = {
   // required
   auth: {
     // must match info in dashboard
-    clientId: "26581cea-19ca-4e02-8e64-68676836db6c",
-    authority: 'https://login.microsoftonline.com/d2f6c0f3-9039-4a02-9e93-b489a6944a07',
+    clientId: "f20cc733-eebf-463a-ab96-563ba859f21e",
+    authority: 'https://login.microsoftonline.com/bdfee2d1-e1a2-48f9-bc73-f52ffee2db1d/',
     knownAuthorities: [
-      'https://login.microsoftonline.com/d2f6c0f3-9039-4a02-9e93-b489a6944a07',
+      'https://login.microsoftonline.com/bdfee2d1-e1a2-48f9-bc73-f52ffee2db1d',
     ],
 
     // login redirect; must match path in dashboard

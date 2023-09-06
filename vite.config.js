@@ -9,6 +9,19 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output:{
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              
+                return id.toString().split('node_modules/')[1].split('/')[0].toString();
+            }
+        }
+      }
+  }
+
+  },
   plugins: [
     vue({ 
       template: { transformAssetUrls }
@@ -24,9 +37,9 @@ export default defineConfig({
       includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'maskable-icon-512x512.png'],
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Cadet Compass',
-        short_name: 'CdtCompass',
-        description: 'Track your CJCR training file',
+        name: 'Cadet Compass - Inspections',
+        short_name: 'CdtCompass Inspect',
+        description: 'For senior cadets to conduct inspections at their unit.',
         theme_color: '#ffffff',
         icons: [
           {

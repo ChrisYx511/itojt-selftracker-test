@@ -100,6 +100,7 @@
     import { onMounted } from 'vue';
     import { json2csv } from 'json-2-csv'
     import { account } from '@/stores/auth';
+    import { root } from '@/config/api';
     const {t} = useI18n()
 
     const data = ref('No Data')
@@ -183,13 +184,13 @@
             inspectionResultSimple.value = []
             phase.value = newPhase.replace(/\s+/g, '');
             division.value = availablePhases.value[phase.value].availableDivisions[0].toLowerCase()
-            Api.get(`http://localhost:8080/cadets?phase=${phase.value}&division=${division.value}`).then((obtainedData) => {
+            Api.get(`${root}/cadets?phase=${phase.value}&division=${division.value}`).then((obtainedData) => {
                 data.value = obtainedData
                 console.log(data.value)
             })
         }
     })
-    Api.get(`http://localhost:8080/cadets?phase=phase3&division=${division.value}`).then((obtainedData) => {
+    Api.get(`${root}/cadets?phase=phase3&division=${division.value}`).then((obtainedData) => {
             console.log(obtainedData)
             data.value = obtainedData
             console.log(data.value)
@@ -213,13 +214,13 @@
             data.value = 'No Data'
             division.value = newDivision.toLowerCase()
             inspectionResultSimple.value = []
-            Api.get(`http://localhost:8080/cadets?phase=${phase.value}&division=${division.value}`).then((obtainedData) => {
+            Api.get(`${root}/cadets?phase=${phase.value}&division=${division.value}`).then((obtainedData) => {
                 data.value = obtainedData
                 console.log(data.value)
             })
         }
     })
-    Api.get(`http://localhost:8080/cadets?phase=${phase.value}&division=${division.value}`).then((obtainedData) => {
+    Api.get(`${root}/cadets?phase=${phase.value}&division=${division.value}`).then((obtainedData) => {
             console.log(obtainedData)
             data.value = obtainedData
             console.log(data.value)
@@ -302,7 +303,7 @@
         localStorage.clear('complexInspectionResults')  
         location.reload()
     }
-    //const cadetList = ref(await Api.get(`http://localhost:8080/cadet`).catch((err) => {console.log(err)}))
+    //const cadetList = ref(await Api.get(`${root}/cadet`).catch((err) => {console.log(err)}))
     // const renderCheck = computed(() => {
     //     if (cadet.value == 'No Data') {
     //         return true

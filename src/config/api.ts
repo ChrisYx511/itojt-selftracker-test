@@ -1,1 +1,1 @@
-export const root = "https://graph.microsoft.com"
+export const root = "https://cadet6victory-cdtcompassinspectapi.azurewebsites.net"
