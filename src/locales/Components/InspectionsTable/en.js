@@ -9,7 +9,8 @@ export const t_inspectionsTable_en = {
         saveButton: 'Save Temporarily',
         finishButton: "Finished, Generate Inspections",
         completeTitle: "Restart or create a correction",
-        restartButton: "Start Over"
+        restartButton: "Start Over",
+        comments: "Comments"
     },
     seniorCadets: 'Senior Cadets',
     cadets: 'Cadets',

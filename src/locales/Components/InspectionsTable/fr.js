@@ -9,7 +9,8 @@ export const t_inspectionsTable_fr = {
         saveButton: 'Sauvegarder Temporairement',
         finishButton: "Fini, Générer l'inspection",
         completeTitle: "Recommencer ou créer une correction",
-        restartButton: "Recommencer"
+        restartButton: "Recommencer",
+        comments: "Commentaires"
     },
     seniorCadets: 'Cadets Sénior',
     cadets: 'Cadets',

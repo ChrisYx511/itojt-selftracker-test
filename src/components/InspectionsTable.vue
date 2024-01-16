@@ -25,7 +25,7 @@
                             </v-col>
                             <v-col cols="12" md="6">
                                 {{ t('inspectionsTable.inspectStaff') }}
-                                <v-switch v-model="inspectStaff" color="primary">Complete Inspections</v-switch>
+                                <v-switch @click="clearInspectResults()" v-model="inspectStaff" color="primary">Complete Inspections</v-switch>
                             </v-col>
                         </v-row>
                     </v-container>
@@ -44,6 +44,7 @@
                 <v-card-title>{{ t('inspectionsTable.saveSend.title')}}</v-card-title>
                 <div class="ma-2">{{t('inspectionsTable.saveSend.correctionToggle')}}</div>
                 <v-switch class="ma-2" v-model="correction" color="primary"></v-switch>
+                <v-textarea v-model="comments" :label="t('inspectionsTable.saveSend.comments')"></v-textarea>
                 <v-btn type="submit" class="ma-2" @click="save()">{{ t('inspectionsTable.saveSend.saveButton') }}</v-btn>
                 <v-btn type="submit" class="ma-2" :loading="generating" @click="generateCSV()">{{ t('inspectionsTable.saveSend.finishButton') }}</v-btn>
             </v-card>
@@ -71,7 +72,7 @@
                     <v-container v-else>
                         <v-row>
                             <v-col><div @click="console.log(inspectionResultSimple[i])">{{ item.last_name + ', ' + item.first_name }}</div></v-col>
-                            <v-col><v-select :disabled="inspectionFinished" :items="inspectionStates.simple" :item-title="title => {return t(`inspectionsTable.tablePlaceholders.inspectionResults.simpleLevels.${title}`)}" v-model="inspectionResultSimple[i]"  :placeholder="t('inspectionsTable.tablePlaceholders.inspectionResults.title')"></v-select></v-col>
+                            <v-col><v-select :disabled="inspectionFinished" :items="displayInspectionStates" v-model="inspectionResultSimple[i]"  :placeholder="t('inspectionsTable.tablePlaceholders.inspectionResults.title')"></v-select></v-col>
                         </v-row>
                     </v-container>
                 </v-list-item>
@@ -101,6 +102,7 @@
     import { json2csv } from 'json-2-csv'
     import { account } from '@/stores/auth';
     import { root } from '@/config/api';
+    import { generateDateString, startDownloadFile } from '@/assets/helpers.js'
     const {t} = useI18n()
 
     const data = ref('No Data')
@@ -108,8 +110,17 @@
     const division = ref('huron')
     const inspectionResultSimple = ref([])
     const inspectionStates = ref({
-        simple: ['sat', 'nsat', 'nr', 'na']
+        simple: ['sat', 'nsat', 'nr', 'na'],
     })
+
+    const displayInspectionStates = computed(() => {
+        let array = [];
+        for (let i = 0; i < inspectionStates.value.simple.length; i++) {
+            array.push(t(`inspectionsTable.tablePlaceholders.inspectionResults.simpleLevels.${inspectionStates.value.simple[i]}`))
+        }
+        return array
+    })
+
     const inspectionFinished = ref(false)
     const correction = ref(false)
     const useComplexInspections = ref(false)
@@ -122,51 +133,45 @@
         accessories: [],
     })
 
+    const comments = ref("")
+
     const staffOrCadet = computed(() => {
         if (inspectStaff.value) {
-            complexInspectionResults.value = {
-                head: [],
-                torso: [],
-                legs: [],
-                foot: [],
-                accessories: [],
-            }
-            inspectionResultSimple.value = []
             return 'seniorCdt'
         } else {
-            complexInspectionResults.value = {
-                head: [],
-                torso: [],
-                legs: [],
-                foot: [],
-                accessories: [],
-            }
-            inspectionResultSimple.value = []
+
             return 'cdt'
         }
     })
+
+    function clearInspectResults() {
+        complexInspectionResults.value = {
+                head: [],
+                torso: [],
+                legs: [],
+                foot: [],
+                accessories: [],
+            }
+            inspectionResultSimple.value = []
+    }
     const savedOverlay = ref(false)
     function save() {
         localStorage.setItem('phase', JSON.stringify(phase.value))
         localStorage.setItem('division', JSON.stringify(division.value))
         localStorage.setItem('inspectionResultSimple', JSON.stringify(inspectionResultSimple.value))
+        localStorage.setItem('inspectStaff', JSON.stringify(inspectStaff.value))
         if (useComplexInspections) {
             localStorage.setItem('useComplexInspections', JSON.stringify(useComplexInspections.value))
             localStorage.setItem('complexInspectionResults', JSON.stringify(complexInspectionResults.value))
         }
         savedOverlay.value = true
     }
-    onMounted(() => {
-        if (localStorage.getItem('phase') !== null) {
-            phase.value = JSON.parse(localStorage.getItem('phase'))
-            division.value = JSON.parse(localStorage.getItem('division'))
-            inspectionResultSimple.value = JSON.parse(localStorage.getItem('inspectionResultSimple'))
-            if (localStorage.getItem('complexInspectionResults')) {
-                useComplexInspections.value = JSON.parse(localStorage.getItem('useComplexInspections'))
-                complexInspectionResults.value = JSON.parse(localStorage.getItem('complexInspectionResults'))
-            }
-        }
-    })
+    if (localStorage.getItem('phase') !== null) {
+        phase.value = JSON.parse(localStorage.getItem('phase'))
+        division.value = JSON.parse(localStorage.getItem('division'))
+        inspectStaff.value = JSON.parse(localStorage.getItem('inspectStaff'))
+    }
+    console.log(division.value)
 
     const renderCheck = computed(() => {
         if (data.value === 'No Data') {
@@ -190,10 +195,20 @@
             })
         }
     })
+    console.log(division.value)
     Api.get(`${root}/cadets?phase=phase3&division=${division.value}`).then((obtainedData) => {
             console.log(obtainedData)
             data.value = obtainedData
             console.log(data.value)
+            if (localStorage.getItem('phase') !== null) {
+
+                inspectionResultSimple.value = JSON.parse(localStorage.getItem('inspectionResultSimple'))
+                if (JSON.parse(localStorage.getItem('complexInspectionResults'))) {
+                    useComplexInspections.value = JSON.parse(localStorage.getItem('useComplexInspections'))
+                    complexInspectionResults.value = JSON.parse(localStorage.getItem('complexInspectionResults'))
+                }
+            }
+            console.log(inspectionResultSimple.value)
         })
     
 
@@ -220,32 +235,9 @@
             })
         }
     })
-    Api.get(`${root}/cadets?phase=${phase.value}&division=${division.value}`).then((obtainedData) => {
-            console.log(obtainedData)
-            data.value = obtainedData
-            console.log(data.value)
-        })
     
 
 
-    // Function to download data to a file
-    function startDownloadFile(content, fileName, mimeType) {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const downloadLink = document.createElement('a');
-    
-    downloadLink.href = url;
-    downloadLink.download = fileName;
-    
-    // Append download link to the DOM and trigger a click to start the download
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    
-    // Clean up after the download is complete
-    document.body.removeChild(downloadLink);
-    URL.revokeObjectURL(url);
-    //location.reload()
-    }
 
     const generating = ref(false)
 
@@ -276,17 +268,18 @@
         }
         //console.log(dataWithInspectionDetails)
         let csvResult = "INSPECTION SHEET | FEUILLE D'INSPECTION\n"
-        if (inspectStaff) {
+        if (inspectStaff.value) {
             csvResult += '-------**SeniorCDT**-------\n'
         } else {
             csvResult += '-------**Cadets**-------\n'
         }
         csvResult += await json2csv(dataWithInspectionDetails[staffOrCadet.value].value)
+        csvResult += `\n\nCOMMENTS: ${comments.value}`
         csvResult += "\nINSPECTED BY: " + account.value.name + ' ID: '+ account.value.username + ' NBF:' + JSON.stringify(account.value.idTokenClaims.nbf) + ' EXP: ' + JSON.stringify(account.value.idTokenClaims.exp)
         console.log(account.value)
         console.log(csvResult)
         generating.value = false
-        let fileName = `INSPECTIONS-${phase.value}-${division.value}-${Date.now()}-${staffOrCadet.value}`
+        let fileName = `INSPECTIONS-${phase.value}-${division.value}-${generateDateString()}-${staffOrCadet.value}`
         if (correction.value) {
             fileName += '-CORRECTION'
         }
